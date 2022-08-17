@@ -1,10 +1,13 @@
 """
     Complexity class to compute different complexity metrics.
-    This code was created based on Michael Schartner's code.
-    Author: Michael Schartner, m.schartner@sussex.ac.uk
-            Christian ferreyra, chrisferreyra13@gmail.com
-    Date: 09.12.14 - 2022
+    
 """
+# This code was created based on Michael Schartner's code.
+# Author: Michael Schartner, m.schartner@sussex.ac.uk
+#         Christian ferreyra, chrisferreyra13@gmail.com
+# Date: 09.12.14 - 2022
+# License : BSD-3-Clause
+
 
 import numpy as np
 from scipy import signal
