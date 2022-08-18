@@ -132,7 +132,7 @@ def _compute_synchrony_matrix(self,data):
         l=0
         for j in range(ro):
             if i!=j:
-                synch_matrix[i,l]=self.compute_synchrony(phases_matrix[i],phases_matrix[j])
+                synch_matrix[i,l]=_compute_synchrony(phases_matrix[i],phases_matrix[j])
                 l+=1
     
     return synch_matrix
