@@ -132,3 +132,7 @@ dmypy.json
 # dev
 dataset/
 random/
+
+
+# vscode
+.vscode

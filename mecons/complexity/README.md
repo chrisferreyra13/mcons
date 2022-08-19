@@ -13,6 +13,9 @@ COMPLETE BRIEF DESCRIPTION
 ## Perturbational complexity index (PCI) [INCOMPLETE]
 COMPLETE BRIEF DESCRIPTION
 
+## Permutation entropy (PE) [INCOMPLETE]
+COMPLETE BRIEF DESCRIPTION
+
 ## References
 
 ### Lempel-Ziv complexity (LZc)
@@ -29,3 +32,5 @@ COMPLETE BRIEF DESCRIPTION
 
 ### Perturbational complexity index (PCI)
 1. Casali AG, Gosseries O, Rosanova M, Boly M, Sarasso S, Casali KR, Casarotto S, Bruno MA, Laureys S, Tononi G, Massimini M. A theoretically based index of consciousness independent of sensory processing and behavior. Sci Transl Med. 2013 Aug 14;5(198):198ra105. doi: 10.1126/scitranslmed.3006294. PMID: 23946194.
+
+### Permutation entropy (PE)
