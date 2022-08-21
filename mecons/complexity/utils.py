@@ -15,56 +15,105 @@ def detrending_normalization(data, first_mean=True):
 
     Parameters
     ----------
-    data : Numpy array
-        Data matrix with rows as channels and columns as values.
+    data : ndarray, (n_channels, n_times)
+        Multidimensional time series matrix.
     first_mean : bool, optional
         If true, the mean value is subtracted before detrending. By default True.
 
     Returns
     -------
-    Numpy array
+    ndarray
         Data matrix after detrending and subtracting the baseline.
     """
-    # TODO: think about the first_mean
-    n_channels, n_values = np.shape(data)
-    data_processed = np.zeros((n_channels, n_values))
 
-    for channel in range(n_channels):
+    if not isinstance(data, np.ndarray):
+        raise TypeError("The input matrix 'data' should be ndarray.")
+
+    # TODO: think about the first_mean
+    n_channels, n_times = np.shape(data)
+    data_processed = np.zeros((n_channels, n_times))
+
+    for ch_idx in range(n_channels):
         if first_mean:
-            data_processed[channel, :] = signal.detrend(
-                data[channel, :] - np.mean(data[channel, :]), axis=0
+            data_processed[ch_idx, :] = signal.detrend(
+                data[ch_idx, :] - np.mean(data[ch_idx, :]), axis=0
             )
         else:
-            data_processed[channel, :] = signal.detrend(data[channel, :], axis=0)
-            data_processed[channel, :] = data_processed[channel, :] - np.mean(
-                data[channel, :]
+            data_processed[ch_idx, :] = signal.detrend(data[ch_idx, :], axis=0)
+            data_processed[ch_idx, :] = data_processed[ch_idx, :] - np.mean(
+                data[ch_idx, :]
             )
 
     return data_processed
 
 
-def binarize_matrix(data):
-    """Binarizes the input multidimensional time series based on Hilbert transform amplitude."""
-    ro, co = np.shape(data)
-    th = 0
-    m = np.zeros((ro, co))
-    binary_matrix = np.zeros((ro, co))
-    for i in range(ro):
-        m[i, :] = abs(signal.hilbert(data[i, :]))
-        th = np.mean(m[i, :])
-        for j in range(co):
-            if m[i, :] >= th:
-                binary_matrix[i, j] = 1
+def binarize_matrix(data, thr_method="mean"):
+    """Binarizes the input multidimensional time series based on Hilbert transform amplitude.
+
+    Parameters
+    ----------
+    data : ndarray, (n_channels, n_times)
+        Multidimensional time series matrix.
+
+    thr_method : str
+        If 'mean', the mean value of the Hilbert amplitude time series is used.
+        If 'median' the median value is used. By default 'mean'.
+
+    Returns
+    -------
+    ndarray
+        Binarized data matrix.
+    """
+    if not isinstance(data, np.ndarray):
+        raise TypeError("The input matrix 'data' should be ndarray.")
+
+    if thr_method not in ["mean", "median"]:
+        raise ValueError("The parameter thr_method should be 'mean' or 'median'.")
+
+    n_channels, n_times = np.shape(data)
+    threshold = 0
+    hilbert_amplitude_matrix = np.zeros((n_channels, n_times))
+    binary_matrix = np.zeros((n_channels, n_times))
+
+    for ch_idx in range(n_channels):
+        # get Hilbert amplitude time series
+        hilbert_amplitude_matrix[ch_idx, :] = abs(signal.hilbert(data[ch_idx, :]))
+
+        # get threshold
+        if thr_method == "mean":
+            threshold = np.mean(hilbert_amplitude_matrix[ch_idx, :])
+        else:
+            threshold = np.median(hilbert_amplitude_matrix[ch_idx, :])
+
+        # binarize time series
+        for t in range(n_times):
+            if hilbert_amplitude_matrix[ch_idx, t] >= threshold:
+                binary_matrix[ch_idx, t] = 1
 
     return binary_matrix
 
 
 def binary_matrix_to_string(binary_matrix):
-    """Creates one string being the binarized input matrix concatenated comlumn-by-column."""
-    ro, co = np.shape(binary_matrix)
-    binary_str = ""
-    for j in range(co):
-        for i in range(ro):
+    """Creates one string being the binarized input matrix concatenated comlumn-by-column.
+
+    Parameters
+    ----------
+    binary_matrix : ndarray
+        Data matrix with binary values.
+
+    Returns
+    -------
+    str
+        Binary string.
+    """
+
+    if not isinstance(binary_matrix, np.ndarray):
+        raise TypeError("The input matrix 'data' should be ndarray.")
+
+    n_rows, n_cols = np.shape(binary_matrix)
+    binary_str = str()
+    for j in range(n_cols):
+        for i in range(n_rows):
             if binary_matrix[i, j] == 1:
                 binary_str += "1"
             else:
@@ -74,39 +123,98 @@ def binary_matrix_to_string(binary_matrix):
 
 
 def map_matrix_to_integer(binary_matrix):
-    """Bijection, mapping each binary column of binary matrix psi onto an integer."""
-    ro, co = np.shape(binary_matrix)
-    c = np.zeros(co)
-    for t in range(co):
-        for j in range(ro):
-            c[t] = c[t] + binary_matrix[j, t] * (2**j)
+    """Bijection, mapping each binary column of binary matrix onto an integer.
 
-    return c
+    Parameters
+    ----------
+    binary_matrix : ndarray, (n_rows, n_columns)
+        Data matrix with binary values.
+
+    Returns
+    -------
+    ndarray, (1,n_columns)
+        Array with integers.
+    """
+
+    if not isinstance(binary_matrix, np.ndarray):
+        raise TypeError("The input matrix 'data' should be ndarray.")
+
+    n_rows, n_cols = np.shape(binary_matrix)
+    col_map = np.zeros(n_cols)
+    for col_idx in range(n_cols):
+        for row_idx in range(n_rows):
+            col_map[col_idx] = col_map[col_idx] + binary_matrix[row_idx, col_idx] * (
+                2**row_idx
+            )
+
+    return col_map
 
 
-def compute_synchrony(p1, p2, threshold=0.8):
-    """Computes a binary synchrony time series between two phase time series."""
+def _compute_synchrony(p1, p2, threshold=0.8):
+    """Computes a binary synchrony time series between two phase time series.
+
+    Parameters
+    ----------
+    p1 : ndarray, (1, n_times)
+        Phase time series.
+    p2 : ndarray, (1, n_times)
+        Phase time series.
+    threshold : float, optional
+        Threshold to define "synchronized" (1) and "not synchronized" (0).
+        By default 0.8.
+
+    Returns
+    -------
+    ndarray, (1, n_times)
+        Binary synchrony time series.
+    """
+    if not isinstance(p1, np.ndarray) or not isinstance(p2, np.ndarray):
+        raise TypeError("The parameters p1 and p2 should be ndarray.")
+
+    if len(p1) != len(p2):
+        raise ValueError("The parameters p1 and p2 don't have the same length.")
+
     differences = np.array(abs(p1 - p2))
     sync_time_series = np.zeros(len(differences))
-    for i in range(len(differences)):
-        if differences[i] > np.pi:
-            differences[i] = 2 * np.pi - differences[i]
-        if differences[i] < threshold:
+    for i, difference in enumerate(differences):
+        # center the difference between 0 and pi
+        if difference > np.pi:
+            difference = 2 * np.pi - difference
+
+        if difference < threshold:
+            # the time series are synchronized
             sync_time_series[i] = 1
 
     return sync_time_series
 
 
 def compute_synchrony_matrix(data):
-    """Computes binary synchrony matrix (by column) based on a multidimensional time series matrix."""
+    """Computes binary synchrony matrix based on a multidimensional time series matrix.
+
+    Parameters
+    ----------
+    data : ndarray, (n_channels, n_times)
+        Multidimensional time series matrix.
+
+    Returns
+    -------
+    ndarray, (n_channels, n_channels - 1, n_times)
+        Synchrony matrix.
+    """
+
+    if not isinstance(data, np.ndarray):
+        raise TypeError("The input matrix 'data' should be ndarray.")
+
+    # get phase time series from Hilbert transform
     phases_matrix = np.angle(signal.hilbert(data))
-    ro, co = np.shape(phases_matrix)
-    synch_matrix = np.zeros((ro, ro - 1, co))
-    for i in range(ro):
+    n_channels, n_times = np.shape(phases_matrix)
+    synch_matrix = np.zeros((n_channels, n_channels - 1, n_times))
+    for i in range(n_channels):
         l = 0
-        for j in range(ro):
+        for j in range(n_channels):
+            # ignore the same channel
             if i != j:
-                synch_matrix[i, l] = compute_synchrony(
+                synch_matrix[i, l] = _compute_synchrony(
                     phases_matrix[i], phases_matrix[j]
                 )
                 l += 1
@@ -115,7 +223,24 @@ def compute_synchrony_matrix(data):
 
 
 def create_random_binary_matrix(n_rows, n_columns):
-    """Creates a random binary matrix."""
+    """Creates a random binary matrix with uniform distribution.
+
+    Parameters
+    ----------
+    n_rows : int
+        Number of rows.
+    n_columns : int
+        Number of colums
+
+    Returns
+    -------
+    ndarray, (n_rows, n_columns)
+        Random binary matrix.
+    """
+
+    if not isinstance(n_rows, int) or not isinstance(n_rows, int):
+        raise TypeError("The number of rows and columns must be integer.")
+
     binary_matrix = np.random.rand(n_rows, n_columns)
     for i in range(n_rows):
         for j in range(n_columns):

@@ -19,7 +19,19 @@ from .utils import (
 
 
 def _compute_entropy_string(string):
-    """Computes the Shannon entropy of a string."""
+    """Computes the Shannon entropy of a string.
+
+    Parameters
+    ----------
+    string : str
+        String to compute entropy.
+
+    Returns
+    -------
+    float
+        Entropy value.
+    """
+    # TODO: check this function
     string = list(string)
     prob = [float(string.count(c)) / len(string) for c in dict.fromkeys(list(string))]
     entropy = -sum([p * np.log2(p) for p in prob])
@@ -32,8 +44,8 @@ def compute_amplitude_coalition_entropy(data):
 
     Parameters
     ----------
-    data : Numpy array
-        Data matrix with rows as channels and columns as values.
+    data : ndarray, (n_channels, n_times)
+        Mulidimensional time series matrix.
 
     Returns
     -------
@@ -42,21 +54,21 @@ def compute_amplitude_coalition_entropy(data):
 
     """
     if not isinstance(data, np.ndarray):
-        TypeError("Data matrix should be a Numpy array of float values.")
+        TypeError("Data matrix should be a ndarray of float values.")
 
     data = detrending_normalization(data, first_mean=False)
-    ro, co = np.shape(data)
+    n_channels, _ = np.shape(data)
     data = binarize_matrix(data)
-    entropy = _compute_entropy_string(data)
+    entropy = _compute_entropy_string(map_matrix_to_integer(data))
     # shuffle the data for normalization
-    for i in range(ro):
-        shuffle(data[i])
+    for ch_idx in range(n_channels):
+        shuffle(data[ch_idx])
 
-    shuffle_entropy = _compute_entropy_string(data)
+    shuffle_entropy = _compute_entropy_string(map_matrix_to_integer(data))
 
-    result = entropy / float(shuffle_entropy)
+    ace_value = entropy / float(shuffle_entropy)
 
-    return result
+    return ace_value
 
 
 def compute_synchrony_coalition_entropy(data):
@@ -64,8 +76,8 @@ def compute_synchrony_coalition_entropy(data):
 
     Parameters
     ----------
-    data : Numpy array
-        Data matrix with rows as channels and columns as values.
+    data : ndarray, (n_channels, n_times)
+        Mulidimensional time series matrix.
 
     Returns
     -------
@@ -73,20 +85,20 @@ def compute_synchrony_coalition_entropy(data):
         Synchrony coalition entropy value (between 0 and 1).
     """
     if not isinstance(data, np.ndarray):
-        TypeError("Data matrix should be a Numpy array of float values.")
+        TypeError("Data matrix should be a ndarray of float values.")
 
     data = detrending_normalization(data)
     n_channels, n_values = np.shape(data)
     data = compute_synchrony_matrix(data)
-    ce = np.zeros(n_channels)
+    channel_sce = np.zeros(n_channels)
     normalization_value = _compute_entropy_string(
         map_matrix_to_integer(create_random_binary_matrix(n_channels - 1, n_values))
     )
     for channel in range(n_channels):
-        c = map_matrix_to_integer(data[channel])
-        ce[channel] = _compute_entropy_string(c)
+        string = map_matrix_to_integer(data[channel])
+        channel_sce[channel] = _compute_entropy_string(string)
 
-    synchrony_coalition_entropy_total = np.mean(ce) / normalization_value
+    sce_total = np.mean(channel_sce) / normalization_value
 
-    return synchrony_coalition_entropy_total
+    return sce_total
     # TODO: see if it should return ce/norm

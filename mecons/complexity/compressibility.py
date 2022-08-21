@@ -24,7 +24,7 @@ def _lempel_ziv_welch_compression(binary_string):
     Returns
     -------
     int
-        Size of the dictionary of binary words
+        Size of the dictionary of binary words.
 
     """
     dictionary = {}
@@ -45,8 +45,8 @@ def compute_lempel_ziv_complexity(data):
 
     Parameters
     ----------
-    data : Numpy array
-        Data matrix with rows as channels and columns as values.
+    data : ndarray, (n_channels, n_times)
+        Mulidimensional time series matrix.
 
     Returns
     -------
@@ -55,18 +55,18 @@ def compute_lempel_ziv_complexity(data):
     """
 
     if not isinstance(data, np.ndarray):
-        TypeError("Data matrix should be a Numpy array of float values.")
+        TypeError("Data matrix should be a ndarray of float values.")
 
     data = detrending_normalization(data)
     binary_str = binary_matrix_to_string(data)
-    m = list(binary_str)
-    shuffle(m)
-    w = ""
-    for i in range(len(m)):
-        w += m[i]
+    random_list = list(binary_str)
+    shuffle(random_list)
+    random_str = ""
+    for c in random_list:
+        random_str += c
 
-    result = _lempel_ziv_welch_compression(binary_str) / float(
-        _lempel_ziv_welch_compression(w)
+    lzc_value = _lempel_ziv_welch_compression(binary_str) / float(
+        _lempel_ziv_welch_compression(random_str)
     )
 
-    return result
+    return lzc_value
