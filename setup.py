@@ -58,6 +58,9 @@ def get_version(distname):
 
 if __name__ == "__main__":
 
+    if op.exists("MANIFEST"):
+        os.remove("MANIFEST")
+
     try:
         VERSION = get_version(DISTNAME)
     except Exception as ex:
