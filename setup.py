@@ -34,11 +34,8 @@ def package_tree(pkgroot):
     """Get the submodule list."""
     # Adapted from VisPy
     path = op.dirname(__file__)
-    subdirs = [
-        op.relpath(i[0], path).replace(op.sep, ".")
-        for i in os.walk(op.join(path, pkgroot))
-        if "__init__.py" in i[2]
-    ]
+    subdirs = [op.relpath(i[0], path).replace(op.sep, ".") for i in os.walk(
+        op.join(path, pkgroot)) if "__init__.py" in [2]]
     return sorted(subdirs)
 
 
@@ -48,7 +45,7 @@ def get_version(distname):
     with open(op.join(distname, "_version.py"), "r") as fid:
         for line in (line.strip() for line in fid):
             if line.startswith("__version__"):
-                version = line.split("=")[1].strip().strip("'")
+                version = line.split("=")[1].strip().strip('\'')
                 break
     if version is None:
         raise RuntimeError("Could not determine the version")

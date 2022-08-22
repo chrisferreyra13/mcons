@@ -11,7 +11,7 @@ from scipy import signal
 
 
 def detrending_normalization(data, first_mean=True):
-    """Detrends and subtracts the baseline on input data.
+    """Detrend and subtract the baseline on input data.
 
     Parameters
     ----------
@@ -25,7 +25,6 @@ def detrending_normalization(data, first_mean=True):
     ndarray
         Data matrix after detrending and subtracting the baseline.
     """
-
     if not isinstance(data, np.ndarray):
         raise TypeError("The input matrix 'data' should be ndarray.")
 
@@ -40,15 +39,14 @@ def detrending_normalization(data, first_mean=True):
             )
         else:
             data_processed[ch_idx, :] = signal.detrend(data[ch_idx, :], axis=0)
-            data_processed[ch_idx, :] = data_processed[ch_idx, :] - np.mean(
-                data[ch_idx, :]
-            )
+            data_processed[ch_idx, :] = data_processed[ch_idx, :] \
+                - np.mean(data[ch_idx, :])
 
     return data_processed
 
 
 def binarize_matrix(data, thr_method="mean"):
-    """Binarizes the input multidimensional time series based on Hilbert transform amplitude.
+    """Binarize the input multidimensional time series based on Hilbert transform amplitude.
 
     Parameters
     ----------
@@ -68,7 +66,8 @@ def binarize_matrix(data, thr_method="mean"):
         raise TypeError("The input matrix 'data' should be ndarray.")
 
     if thr_method not in ["mean", "median"]:
-        raise ValueError("The parameter thr_method should be 'mean' or 'median'.")
+        raise ValueError(
+            "The parameter thr_method should be 'mean' or 'median'.")
 
     n_channels, n_times = np.shape(data)
     threshold = 0
@@ -77,7 +76,8 @@ def binarize_matrix(data, thr_method="mean"):
 
     for ch_idx in range(n_channels):
         # get Hilbert amplitude time series
-        hilbert_amplitude_matrix[ch_idx, :] = abs(signal.hilbert(data[ch_idx, :]))
+        hilbert_amplitude_matrix[ch_idx, :] = abs(
+            signal.hilbert(data[ch_idx, :]))
 
         # get threshold
         if thr_method == "mean":
@@ -94,7 +94,7 @@ def binarize_matrix(data, thr_method="mean"):
 
 
 def binary_matrix_to_string(binary_matrix):
-    """Creates one string being the binarized input matrix concatenated comlumn-by-column.
+    """Create one string being the binarized input matrix concatenated comlumn-by-column.
 
     Parameters
     ----------
@@ -106,7 +106,6 @@ def binary_matrix_to_string(binary_matrix):
     str
         Binary string.
     """
-
     if not isinstance(binary_matrix, np.ndarray):
         raise TypeError("The input matrix 'data' should be ndarray.")
 
@@ -135,7 +134,6 @@ def map_matrix_to_integer(binary_matrix):
     ndarray, (1,n_columns)
         Array with integers.
     """
-
     if not isinstance(binary_matrix, np.ndarray):
         raise TypeError("The input matrix 'data' should be ndarray.")
 
@@ -143,21 +141,20 @@ def map_matrix_to_integer(binary_matrix):
     col_map = np.zeros(n_cols)
     for col_idx in range(n_cols):
         for row_idx in range(n_rows):
-            col_map[col_idx] = col_map[col_idx] + binary_matrix[row_idx, col_idx] * (
-                2**row_idx
-            )
+            col_map[col_idx] = col_map[col_idx] + \
+                binary_matrix[row_idx, col_idx] * (2**row_idx)
 
     return col_map
 
 
-def _compute_synchrony(p1, p2, threshold=0.8):
-    """Computes a binary synchrony time series between two phase time series.
+def _compute_synchrony(p_1, p_2, threshold=0.8):
+    """Compute a binary synchrony time series between two phase time series.
 
     Parameters
     ----------
-    p1 : ndarray, (1, n_times)
+    p_1 : ndarray, (1, n_times)
         Phase time series.
-    p2 : ndarray, (1, n_times)
+    p_2 : ndarray, (1, n_times)
         Phase time series.
     threshold : float, optional
         Threshold to define "synchronized" (1) and "not synchronized" (0).
@@ -168,13 +165,14 @@ def _compute_synchrony(p1, p2, threshold=0.8):
     ndarray, (1, n_times)
         Binary synchrony time series.
     """
-    if not isinstance(p1, np.ndarray) or not isinstance(p2, np.ndarray):
-        raise TypeError("The parameters p1 and p2 should be ndarray.")
+    if not isinstance(p_1, np.ndarray) or not isinstance(p_2, np.ndarray):
+        raise TypeError("The parameters p_1 and p_2 should be ndarray.")
 
-    if len(p1) != len(p2):
-        raise ValueError("The parameters p1 and p2 don't have the same length.")
+    if len(p_1) != len(p_2):
+        raise ValueError(
+            "The parameters p_1 and p_2 don't have the same length.")
 
-    differences = np.array(abs(p1 - p2))
+    differences = np.array(abs(p_1 - p_2))
     sync_time_series = np.zeros(len(differences))
     for i, difference in enumerate(differences):
         # center the difference between 0 and pi
@@ -189,7 +187,7 @@ def _compute_synchrony(p1, p2, threshold=0.8):
 
 
 def compute_synchrony_matrix(data):
-    """Computes binary synchrony matrix based on a multidimensional time series matrix.
+    """Compute binary synchrony matrix based on a multidimensional time series matrix.
 
     Parameters
     ----------
@@ -201,7 +199,6 @@ def compute_synchrony_matrix(data):
     ndarray, (n_channels, n_channels - 1, n_times)
         Synchrony matrix.
     """
-
     if not isinstance(data, np.ndarray):
         raise TypeError("The input matrix 'data' should be ndarray.")
 
@@ -215,15 +212,14 @@ def compute_synchrony_matrix(data):
             # ignore the same channel
             if i != j:
                 synch_matrix[i, l] = _compute_synchrony(
-                    phases_matrix[i], phases_matrix[j]
-                )
+                    phases_matrix[i], phases_matrix[j])
                 l += 1
 
     return synch_matrix
 
 
 def create_random_binary_matrix(n_rows, n_columns):
-    """Creates a random binary matrix with uniform distribution.
+    """Create a random binary matrix with uniform distribution.
 
     Parameters
     ----------
@@ -237,7 +233,6 @@ def create_random_binary_matrix(n_rows, n_columns):
     ndarray, (n_rows, n_columns)
         Random binary matrix.
     """
-
     if not isinstance(n_rows, int) or not isinstance(n_rows, int):
         raise TypeError("The number of rows and columns must be integer.")
 

@@ -14,7 +14,7 @@ from .utils import detrending_normalization, binary_matrix_to_string
 
 
 def _lempel_ziv_welch_compression(binary_string):
-    """Returns the size of the dictionary of binary words after Lempel-Ziv-Welch compression.
+    """Return the size of the dictionary of binary words after Lempel-Ziv-Welch compression.
 
     Parameters
     ----------
@@ -41,7 +41,7 @@ def _lempel_ziv_welch_compression(binary_string):
 
 
 def compute_lempel_ziv_complexity(data):
-    """Computes LZc and use shuffled result as normalization.
+    """Compute LZc and use shuffled result as normalization.
 
     Parameters
     ----------
@@ -53,7 +53,6 @@ def compute_lempel_ziv_complexity(data):
     float
         Lempel-Ziv complexity value (between 0 and 1).
     """
-
     if not isinstance(data, np.ndarray):
         TypeError("Data matrix should be a ndarray of float values.")
 
@@ -65,8 +64,7 @@ def compute_lempel_ziv_complexity(data):
     for c in random_list:
         random_str += c
 
-    lzc_value = _lempel_ziv_welch_compression(binary_str) / float(
-        _lempel_ziv_welch_compression(random_str)
-    )
+    lzc_value = _lempel_ziv_welch_compression(binary_str)
+    lzc_value = lzc_value / float(_lempel_ziv_welch_compression(random_str))
 
     return lzc_value

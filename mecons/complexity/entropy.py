@@ -19,7 +19,7 @@ from .utils import (
 
 
 def _compute_entropy_string(string):
-    """Computes the Shannon entropy of a string.
+    """Compute the Shannon entropy of a string.
 
     Parameters
     ----------
@@ -33,14 +33,15 @@ def _compute_entropy_string(string):
     """
     # TODO: check this function
     string = list(string)
-    prob = [float(string.count(c)) / len(string) for c in dict.fromkeys(list(string))]
+    prob = [float(string.count(c)) / len(string)
+            for c in dict.fromkeys(list(string))]
     entropy = -sum([p * np.log2(p) for p in prob])
 
     return entropy
 
 
 def compute_amplitude_coalition_entropy(data):
-    """Computes Amplitude Coalition Entropy (ACE), using shuffled result as normalization.
+    """Compute Amplitude Coalition Entropy (ACE), using shuffled result as normalization.
 
     Parameters
     ----------
@@ -51,7 +52,6 @@ def compute_amplitude_coalition_entropy(data):
     -------
     float
         Amplitude coalition entropy value (between 0 and 1).
-
     """
     if not isinstance(data, np.ndarray):
         TypeError("Data matrix should be a ndarray of float values.")
@@ -72,7 +72,7 @@ def compute_amplitude_coalition_entropy(data):
 
 
 def compute_synchrony_coalition_entropy(data):
-    """Computes Synchrony Coalition Entropy (SCE), using shuffled result as normalization.
+    """Compute Synchrony Coalition Entropy (SCE), using shuffled result as normalization.
 
     Parameters
     ----------
@@ -91,9 +91,8 @@ def compute_synchrony_coalition_entropy(data):
     n_channels, n_values = np.shape(data)
     data = compute_synchrony_matrix(data)
     channel_sce = np.zeros(n_channels)
-    normalization_value = _compute_entropy_string(
-        map_matrix_to_integer(create_random_binary_matrix(n_channels - 1, n_values))
-    )
+    normalization_value = _compute_entropy_string(map_matrix_to_integer(
+        create_random_binary_matrix(n_channels - 1, n_values)))
     for channel in range(n_channels):
         string = map_matrix_to_integer(data[channel])
         channel_sce[channel] = _compute_entropy_string(string)
