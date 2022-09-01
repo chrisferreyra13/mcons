@@ -14,7 +14,8 @@ from .utils import detrending_normalization, binary_matrix_to_string
 
 
 def _lempel_ziv_welch_compression(binary_string):
-    """Return the size of the dictionary of binary words after Lempel-Ziv-Welch compression.
+    """Return the size of the dictionary of binary words
+    after Lempel-Ziv-Welch compression.
 
     Parameters
     ----------

@@ -18,7 +18,8 @@ def detrending_normalization(data, first_mean=True):
     data : ndarray, (n_channels, n_times)
         Multidimensional time series matrix.
     first_mean : bool, optional
-        If true, the mean value is subtracted before detrending. By default True.
+        If true, the mean value is subtracted before detrending.
+        By default True.
 
     Returns
     -------
@@ -46,7 +47,8 @@ def detrending_normalization(data, first_mean=True):
 
 
 def binarize_matrix(data, thr_method="mean"):
-    """Binarize the input multidimensional time series based on Hilbert transform amplitude.
+    """Binarize the input multidimensional time series
+    based on Hilbert transform amplitude.
 
     Parameters
     ----------
@@ -94,7 +96,8 @@ def binarize_matrix(data, thr_method="mean"):
 
 
 def binary_matrix_to_string(binary_matrix):
-    """Create one string being the binarized input matrix concatenated comlumn-by-column.
+    """Create one string being the binarized input matrix,
+    concatenated column-by-column.
 
     Parameters
     ----------
@@ -187,7 +190,8 @@ def _compute_synchrony(p_1, p_2, threshold=0.8):
 
 
 def compute_synchrony_matrix(data):
-    """Compute binary synchrony matrix based on a multidimensional time series matrix.
+    """Compute binary synchrony matrix based on
+    a multidimensional time series matrix.
 
     Parameters
     ----------
@@ -207,13 +211,13 @@ def compute_synchrony_matrix(data):
     n_channels, n_times = np.shape(phases_matrix)
     synch_matrix = np.zeros((n_channels, n_channels - 1, n_times))
     for i in range(n_channels):
-        l = 0
+        k = 0
         for j in range(n_channels):
             # ignore the same channel
-            if i != j:
-                synch_matrix[i, l] = _compute_synchrony(
+            if i != k:
+                synch_matrix[i, k] = _compute_synchrony(
                     phases_matrix[i], phases_matrix[j])
-                l += 1
+                k += 1
 
     return synch_matrix
 

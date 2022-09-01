@@ -41,7 +41,8 @@ def _compute_entropy_string(string):
 
 
 def compute_amplitude_coalition_entropy(data):
-    """Compute Amplitude Coalition Entropy (ACE), using shuffled result as normalization.
+    """Compute Amplitude Coalition Entropy (ACE),
+    using shuffled result as normalization.
 
     Parameters
     ----------
@@ -72,7 +73,8 @@ def compute_amplitude_coalition_entropy(data):
 
 
 def compute_synchrony_coalition_entropy(data):
-    """Compute Synchrony Coalition Entropy (SCE), using shuffled result as normalization.
+    """Compute Synchrony Coalition Entropy (SCE),
+    using shuffled result as normalization.
 
     Parameters
     ----------
