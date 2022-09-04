@@ -1,2 +1,4 @@
-# to be filled
 pytest
+pytest-cov
+numpydoc
+codespell
