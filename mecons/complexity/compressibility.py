@@ -10,7 +10,7 @@
 import numpy as np
 from random import shuffle
 
-from .utils import detrending_normalization, binary_matrix_to_string
+from ._utils import detrending_normalization, binary_matrix_to_string
 
 
 def _lempel_ziv_welch_compression(binary_string):

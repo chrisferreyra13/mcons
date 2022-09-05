@@ -9,7 +9,7 @@
 import numpy as np
 from random import shuffle
 
-from .utils import (
+from ._utils import (
     detrending_normalization,
     binarize_matrix,
     compute_synchrony_matrix,

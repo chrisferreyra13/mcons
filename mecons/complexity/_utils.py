@@ -11,20 +11,17 @@ from scipy import signal
 
 
 def detrending_normalization(data, first_mean=True):
-    """Detrend and subtract the baseline on input data.
+    """Detrend and subtract the mean on input data.
 
     Parameters
     ----------
     data : ndarray, (n_channels, n_times)
         Multidimensional time series matrix.
-    first_mean : bool, optional
-        If true, the mean value is subtracted before detrending.
-        By default True.
 
     Returns
     -------
     ndarray
-        Data matrix after detrending and subtracting the baseline.
+        Data matrix after detrending and subtracting the mean.
     """
     if not isinstance(data, np.ndarray):
         raise TypeError("The input matrix 'data' should be ndarray.")
@@ -34,14 +31,9 @@ def detrending_normalization(data, first_mean=True):
     data_processed = np.zeros((n_channels, n_times))
 
     for ch_idx in range(n_channels):
-        if first_mean:
-            data_processed[ch_idx, :] = signal.detrend(
-                data[ch_idx, :] - np.mean(data[ch_idx, :]), axis=0
-            )
-        else:
-            data_processed[ch_idx, :] = signal.detrend(data[ch_idx, :], axis=0)
-            data_processed[ch_idx, :] = data_processed[ch_idx, :] \
-                - np.mean(data[ch_idx, :])
+        data_processed[ch_idx, :] = signal.detrend(
+            data[ch_idx, :] - np.mean(data[ch_idx, :]), axis=0
+        )
 
     return data_processed
 
