@@ -12,7 +12,22 @@ pip install -U mecons
 ```
 
 ## Get the latest code
+To install the latest version of the code using [pip](https://pip.pypa.io/en/stable/) open a terminal and type:
+```sh
+pip install -U https://github.com/chrisferreyra13/mecons-py/archive/main.zip
+```
 To get the latest code using git, open a terminal and type:
 ```sh
 git clone https://github.com/chrisferreyra13/mecons-py.git
 ```
+
+Alternatively, you can also download a [zip file of the latest development version](https://github.com/chrisferreyra13/mecons-py/archive/main.zip).
+
+## Dependencies
+- Python >= 3.7
+- MNE-Python >= 1.1.0
+- NumPy >= 1.18.1
+- SciPy >= 1.4.1
+
+## Contributing to MeCons
+Please see the [contributing guide](https://github.com/chrisferreyra13/mecons-py/blob/main/CONTRIBUTING.md).
