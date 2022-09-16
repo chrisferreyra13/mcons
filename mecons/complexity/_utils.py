@@ -10,7 +10,7 @@ import numpy as np
 from scipy import signal
 
 
-def detrending_normalization(data, first_mean=True):
+def detrending_normalization(data):
     """Detrend and subtract the mean on input data.
 
     Parameters
@@ -26,7 +26,6 @@ def detrending_normalization(data, first_mean=True):
     if not isinstance(data, np.ndarray):
         raise TypeError("The input matrix 'data' should be ndarray.")
 
-    # TODO: think about the first_mean
     n_channels, n_times = np.shape(data)
     data_processed = np.zeros((n_channels, n_times))
 
@@ -39,8 +38,8 @@ def detrending_normalization(data, first_mean=True):
 
 
 def binarize_matrix(data, thr_method="mean"):
-    """Binarize the input multidimensional time series
-    based on Hilbert transform amplitude.
+    """Binarize the input multidimensional time series based on
+    the instantaneous amplitude of the analytic signal.
 
     Parameters
     ----------
@@ -66,7 +65,7 @@ def binarize_matrix(data, thr_method="mean"):
     n_channels, n_times = np.shape(data)
     threshold = 0
     hilbert_amplitude_matrix = np.zeros((n_channels, n_times))
-    binary_matrix = np.zeros((n_channels, n_times))
+    binary_matrix = np.zeros((n_channels, n_times), dtype=np.int8)
 
     for ch_idx in range(n_channels):
         # get Hilbert amplitude time series
@@ -110,14 +109,16 @@ def binary_matrix_to_string(binary_matrix):
         for i in range(n_rows):
             if binary_matrix[i, j] == 1:
                 binary_str += "1"
-            else:
+            elif binary_matrix[i, j] == 0:
                 binary_str += "0"
+            else:
+                raise ValueError("The input matrix 'data' should be binary.")
 
     return binary_str
 
 
 def map_matrix_to_integer(binary_matrix):
-    """Bijection, mapping each binary column of binary matrix onto an integer.
+    """Map each binary column of binary matrix onto an integer.
 
     Parameters
     ----------
@@ -133,11 +134,15 @@ def map_matrix_to_integer(binary_matrix):
         raise TypeError("The input matrix 'data' should be ndarray.")
 
     n_rows, n_cols = np.shape(binary_matrix)
-    col_map = np.zeros(n_cols)
+    col_map = np.zeros(n_cols, dtype=int)
     for col_idx in range(n_cols):
         for row_idx in range(n_rows):
-            col_map[col_idx] = col_map[col_idx] + \
-                binary_matrix[row_idx, col_idx] * (2**row_idx)
+            if (binary_matrix[row_idx, col_idx] == 0
+                    or binary_matrix[row_idx, col_idx] == 1):
+                col_map[col_idx] = col_map[col_idx] + \
+                    binary_matrix[row_idx, col_idx] * (2**row_idx)
+            else:
+                raise ValueError("The input matrix 'data' should be binary.")
 
     return col_map
 

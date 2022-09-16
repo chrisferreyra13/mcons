@@ -57,7 +57,7 @@ def compute_amplitude_coalition_entropy(data):
     if not isinstance(data, np.ndarray):
         TypeError("Data matrix should be a ndarray of float values.")
 
-    data = detrending_normalization(data, first_mean=False)
+    data = detrending_normalization(data)
     n_channels, _ = np.shape(data)
     data = binarize_matrix(data)
     entropy = _compute_entropy_string(map_matrix_to_integer(data))
