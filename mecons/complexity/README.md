@@ -9,7 +9,7 @@ Readings recommendations:
 * [2]: Schartner et al., 2017.
 
 ## Amplitude coalition entropy (ACE)
-It reflects the entropy over time of the constitution (coalition) of the set of most active channels [2]. It is similar to Lempel-Ziv complexity in the sense that it quantifies variability in space and time of the activity [1]. The normalised value is computed in the same way as LZc.
+It reflects the entropy over time of the constitution (coalition) of the set of most active channels [2]. It is similar to Lempel-Ziv complexity in the sense that it quantifies variability in space and time of the activity [1]. The normalised value is computed in the same way as LZc [1][2].
 
 Readings recommendations:
 * [1]: Schartner et al., 2015.
