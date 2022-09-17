@@ -4,21 +4,21 @@ Description of these metrics
 ## Lempel-Ziv complexity (LZc)
 It derives from the lack of compressibility of the input data matrix, taking into account patterns of activity in space and time. Strictly only reflects differentiation (and not integration)[1]. The normalised LZc is computed by dividing the raw value by the value obtained for the same binary input sequence randomly shuffled [1][2].
 
-Readings recommendations:
+Reading recommendations:
 * [1]: Schartner et al., 2015.
 * [2]: Schartner et al., 2017.
 
 ## Amplitude coalition entropy (ACE)
 It reflects the entropy over time of the constitution (coalition) of the set of most active channels [2]. It is similar to Lempel-Ziv complexity in the sense that it quantifies variability in space and time of the activity [1]. The normalised value is computed in the same way as LZc [1][2].
 
-Readings recommendations:
+Reading recommendations:
 * [1]: Schartner et al., 2015.
 * [2]: Schartner et al., 2017.
 
 ## Synchrony coalition entropy (SCE)
 It reflects the entropy over time of the constitution (coalition) of the set of synchronous channels [2]. It quantifies variability in the relationship between pairs of channels [1].
 
-Readings recommendations:
+Reading recommendations:
 * [1]: Schartner et al., 2015.
 * [2]: Schartner et al., 2017.
 
@@ -26,7 +26,7 @@ Readings recommendations:
 [INCOMPLETE]  
 Complete brief description.
 
-Readings recommendations:
+Reading recommendations:
 * [3]: Casali et al., 2013.
 
 ## Permutation entropy (PE)

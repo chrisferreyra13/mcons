@@ -38,8 +38,9 @@ def detrending_normalization(data):
 
 
 def binarize_matrix(data, thr_method="mean"):
-    """Binarize the input multidimensional time series based on
-    the instantaneous amplitude of the analytic signal.
+    """Binarize a multidimensional time series.
+
+    Binaziration based on the instantaneous amplitude of the analytic signal.
 
     Parameters
     ----------
@@ -87,8 +88,9 @@ def binarize_matrix(data, thr_method="mean"):
 
 
 def binary_matrix_to_string(binary_matrix):
-    """Create one string being the binarized input matrix,
-    concatenated column-by-column.
+    """Create one string being the binarized input matrix.
+
+    Note: Concatenated column-by-column.
 
     Parameters
     ----------
@@ -147,14 +149,14 @@ def map_matrix_to_integer(binary_matrix):
     return col_map
 
 
-def _compute_synchrony(p_1, p_2, threshold=0.8):
+def _compute_synchrony(p1, p2, threshold=0.8):
     """Compute a binary synchrony time series between two phase time series.
 
     Parameters
     ----------
-    p_1 : ndarray, (1, n_times)
+    p1 : ndarray, (1, n_times)
         Phase time series.
-    p_2 : ndarray, (1, n_times)
+    p2 : ndarray, (1, n_times)
         Phase time series.
     threshold : float, optional
         Threshold to define "synchronized" (1) and "not synchronized" (0).
@@ -165,15 +167,15 @@ def _compute_synchrony(p_1, p_2, threshold=0.8):
     ndarray, (1, n_times)
         Binary synchrony time series.
     """
-    if not isinstance(p_1, np.ndarray) or not isinstance(p_2, np.ndarray):
-        raise TypeError("The parameters p_1 and p_2 should be ndarray.")
+    if not isinstance(p1, np.ndarray) or not isinstance(p2, np.ndarray):
+        raise TypeError("The parameters p1 and p2 should be ndarray.")
 
-    if len(p_1) != len(p_2):
+    if len(p1) != len(p2):
         raise ValueError(
-            "The parameters p_1 and p_2 don't have the same length.")
+            "The parameters p1 and p2 don't have the same length.")
 
-    differences = np.array(abs(p_1 - p_2))
-    sync_time_series = np.zeros(len(differences))
+    differences = np.array(abs(p1 - p2))
+    sync_time_series = np.zeros(len(differences), dtype=np.int8)
     for i, difference in enumerate(differences):
         # center the difference between 0 and pi
         if difference > np.pi:
@@ -186,14 +188,16 @@ def _compute_synchrony(p_1, p_2, threshold=0.8):
     return sync_time_series
 
 
-def compute_synchrony_matrix(data):
-    """Compute binary synchrony matrix based on
-    a multidimensional time series matrix.
+def compute_synchrony_matrix(data, threshold=0.8):
+    """Compute binary synchrony matrix.
 
     Parameters
     ----------
     data : ndarray, (n_channels, n_times)
         Multidimensional time series matrix.
+    threshold : float, optional
+        Threshold to define "synchronized" (1) and "not synchronized" (0).
+        By default 0.8.
 
     Returns
     -------
@@ -206,14 +210,20 @@ def compute_synchrony_matrix(data):
     # get phase time series from Hilbert transform
     phases_matrix = np.angle(signal.hilbert(data))
     n_channels, n_times = np.shape(phases_matrix)
-    synch_matrix = np.zeros((n_channels, n_channels - 1, n_times))
+    synch_matrix = np.zeros(
+        shape=(n_channels, n_channels - 1, n_times),
+        dtype=np.int8
+    )
     for i in range(n_channels):
         k = 0
         for j in range(n_channels):
             # ignore the same channel
-            if i != k:
+            if i != j:
                 synch_matrix[i, k] = _compute_synchrony(
-                    phases_matrix[i], phases_matrix[j])
+                    phases_matrix[i],
+                    phases_matrix[j],
+                    threshold=threshold
+                )
                 k += 1
 
     return synch_matrix
@@ -245,4 +255,5 @@ def create_random_binary_matrix(n_rows, n_columns):
             else:
                 binary_matrix[i, j] = 0
 
+    binary_matrix = binary_matrix.astype('int8')
     return binary_matrix
