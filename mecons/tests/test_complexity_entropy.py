@@ -1,6 +1,6 @@
-"""Tests for complexity metrics based on compressibility."""
+"""Tests for complexity metrics based on entropy."""
 
-# Author: Christian ferreyra, chrisferreyra13@gmail.com
+# Author: Christian Ferreyra, chrisferreyra13@gmail.com
 # Date: 09.2022
 # License : BSD-3-Clause
 
