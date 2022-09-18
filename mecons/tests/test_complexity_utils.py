@@ -1,6 +1,8 @@
-"""Tests for usuful functions in complexity"""
+"""Tests for usuful functions in complexity."""
 
 # Author: Christian ferreyra, chrisferreyra13@gmail.com
+# Date: 09.2022
+# License : BSD-3-Clause
 
 import numpy as np
 from scipy.signal import hilbert
@@ -19,6 +21,7 @@ from mecons.complexity._utils import (
 
 def test_detrending_normalization():
     """Test detrending and normalization."""
+    # testing correct operation
     n_points = 1000
     # input data
     x = np.linspace(0, n_points, n_points)

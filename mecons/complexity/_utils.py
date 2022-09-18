@@ -46,7 +46,6 @@ def binarize_matrix(data, thr_method="mean"):
     ----------
     data : ndarray, (n_channels, n_times)
         Multidimensional time series matrix.
-
     thr_method : str
         If 'mean', the mean value of the Hilbert amplitude time series is used.
         If 'median' the median value is used. By default 'mean'.
