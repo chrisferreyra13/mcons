@@ -1,4 +1,4 @@
-# Based on MNE-Python's setup file
+# Adapted and based on MNE-Python's setup file
 
 # Authors: Christian Ferreyra, chrisferreyra13@gmail.com
 
@@ -32,23 +32,26 @@ def parse_requirements_file(fname):
 
 def package_tree(pkgroot):
     """Get the submodule list."""
-    # Adapted from VisPy
     path = op.dirname(__file__)
-    subdirs = [op.relpath(i[0], path).replace(op.sep, '.')
-               for i in os.walk(op.join(path, pkgroot)) if '__init__.py' in i[2]]
+    subdirs = [
+        op.relpath(i[0], path).replace(op.sep, '.')
+        for i in os.walk(op.join(path, pkgroot))
+        if '__init__.py' in i[2]
+    ]
     return sorted(subdirs)
 
 
 def get_version(distname):
     version = None
-    # get the version (don't import mecons here, so dependencies are not needed)
+    # get the version
+    # (don't import mecons here, so dependencies are not needed)
     with open(op.join(distname, '_version.py'), 'r') as fid:
         for line in (line.strip() for line in fid):
             if line.startswith("__version__"):
                 version = line.split('=')[1].strip().strip('\'')
                 break
     if version is None:
-        raise RuntimeError("Could not determine the version")
+        raise RuntimeError("Could not determine the version.")
 
     return version
 
@@ -97,7 +100,6 @@ if __name__ == "__main__":
         ],
         keywords="consciousness neuroscience neuroimaging MEG EEG brain",
         project_urls={
-            "Documentation": "https://mne.tools/",
             "Source": "https://github.com/chrisferreyra13/mecons-py",
             "Tracker": "https://github.com/chrisferreyra13/mecons-py/issues/",
         },
