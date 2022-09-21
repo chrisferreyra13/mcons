@@ -23,7 +23,7 @@ def _compute_entropy(data):
 
     Parameters
     ----------
-    data : list or ndarray
+    data : list or ndarray, shape (n_values,)
         List of numbers/strings to compute Shannon entropy.
 
     Returns
@@ -47,7 +47,7 @@ def _compute_entropy(data):
     return entropy
 
 
-def amplitude_coalition_entropy(data):
+def amplitude_coalition_entropy(data, preprocessed=True):
     """Compute Amplitude Coalition Entropy (ACE).
 
     Note: The shuffled result is used as normalization.
@@ -55,64 +55,108 @@ def amplitude_coalition_entropy(data):
     Parameters
     ----------
     data : ndarray, (n_channels, n_times)
-        Mulidimensional time series matrix.
+        If preprocessed is True (default), mulidimensional time series matrix.
+        If preprocessed is False, binary matrix.
+    preprocessed : bool, optional (default True)
+        If True, data will be preprocessed with defined steps.
+        If False, data is not preprocessed but should be a binary matrix.
 
     Returns
     -------
     float
         Amplitude coalition entropy value (between 0 and 1).
     """
-    if not isinstance(data, np.ndarray):
-        TypeError("Data matrix should be a ndarray of float values.")
+    if preprocessed:
+        if not isinstance(data, np.ndarray):
+            raise TypeError("Data matrix should be a ndarray of float values.")
 
-    data = detrending_normalization(data)
-    n_channels, _ = np.shape(data)
-    data = binarize_matrix(data)
-    col_map = map_matrix_to_integer(data)
+        data = detrending_normalization(data)
+        data = binarize_matrix(data)
+    else:
+        if not isinstance(data, np.ndarray):
+            raise TypeError(
+                "Data matrix should be a ndarray of binary values.")
+
+    try:
+        col_map = map_matrix_to_integer(data)
+    except ValueError as ex:
+        raise ex
+
+    # compute ace value (not normalized)
     ace_value = _compute_entropy(col_map)
+
     # shuffle the data for normalization
+    n_channels, _ = np.shape(data)
     for ch_idx in range(n_channels):
         shuffle(data[ch_idx])
 
     shuffled_ace_value = _compute_entropy(map_matrix_to_integer(data))
 
+    # normalize
     ace_value_normalized = ace_value / float(shuffled_ace_value)
 
     return ace_value_normalized
 
 
-def synchrony_coalition_entropy(data, per_channel=False):
+def synchrony_coalition_entropy(data, preprocessed=True, per_channel=False):
     """Compute Synchrony Coalition Entropy (SCE).
 
     Note: The shuffled result is used as normalization.
 
     Parameters
     ----------
-    data : ndarray, (n_channels, n_times)
-        Mulidimensional time series matrix.
-    per_channel : bool
-        If True, also returns SCE value per channel. By default False.
+    data : ndarray, shape (n_channels, ...)
+        If preprocessed is True (default), mulidimensional time series matrix
+        of shape (n_channels, n_times).
+        If preprocessed is False, should be a binary matrix of shape
+        (n_channels, n_channels - 1, n_times) representing the synchronization
+        between channels.
+    preprocessed : bool, optional (default True)
+        If True, data will be preprocessed with defined steps.
+        If False, data is not preprocessed but should be a binary matrix.
+    per_channel : bool, optional (default False)
+        If True, also returns SCE value per channel.
 
     Returns
     -------
     float
         Synchrony coalition entropy value (between 0 and 1).
     """
-    if not isinstance(data, np.ndarray):
-        TypeError("Data matrix should be a ndarray of float values.")
+    if preprocessed:
+        if not isinstance(data, np.ndarray):
+            raise TypeError("Data matrix should be a ndarray of float values.")
 
-    data = detrending_normalization(data)
-    n_channels, n_values = np.shape(data)
-    data = compute_synchrony_matrix(data)
+        data = detrending_normalization(data)
+        n_channels, n_values = np.shape(data)
+        data = compute_synchrony_matrix(data)
+    else:
+        if not isinstance(data, np.ndarray):
+            raise TypeError(
+                "Data matrix should be a ndarray of binary values.")
+        if len(np.shape(data)) != 3:
+            raise ValueError(
+                "Data matrix should be a ndarray of shape"
+                + "(n_channels, n_channels - 1, n_times)."
+            )
+
+        n_channels, _, n_values = np.shape(data)
+
+    # compute sce value (not normalized)
     channel_sce_value = np.zeros(n_channels)
+    for ch_idx in range(n_channels):
+        try:
+            col_map = map_matrix_to_integer(data[ch_idx])
+        except ValueError as ex:
+            raise ex
+        channel_sce_value[ch_idx] = _compute_entropy(col_map)
+
+    # create random matrix for normalization
     col_map = map_matrix_to_integer(
         create_random_binary_matrix(n_channels - 1, n_values)
     )
     normalization_value = _compute_entropy(col_map)
-    for ch_idx in range(n_channels):
-        col_map = map_matrix_to_integer(data[ch_idx])
-        channel_sce_value[ch_idx] = _compute_entropy(col_map)
 
+    # normalize
     sce_total = np.mean(channel_sce_value) / normalization_value
 
     if per_channel:
