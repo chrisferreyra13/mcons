@@ -9,8 +9,8 @@
 import numpy as np
 from random import shuffle
 
-from ._utils import (
-    detrending_normalization,
+from ..utils.preprocessing import detrending_normalization
+from ..utils.binary import (
     binary_matrix_to_string,
     binarize_matrix
 )
@@ -47,7 +47,7 @@ def _lempel_ziv_welch_compression(binary_string):
     return len(dictionary)
 
 
-def compute_lempel_ziv_complexity(data):
+def lempel_ziv_complexity(data):
     """Compute LZc and use shuffled result as normalization.
 
     Parameters

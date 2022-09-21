@@ -9,8 +9,8 @@
 from random import shuffle
 import numpy as np
 
-from ._utils import (
-    detrending_normalization,
+from ..utils.preprocessing import detrending_normalization
+from ..utils.binary import (
     binarize_matrix,
     compute_synchrony_matrix,
     create_random_binary_matrix,
@@ -47,7 +47,7 @@ def _compute_entropy(data):
     return entropy
 
 
-def compute_amplitude_coalition_entropy(data):
+def amplitude_coalition_entropy(data):
     """Compute Amplitude Coalition Entropy (ACE).
 
     Note: The shuffled result is used as normalization.
@@ -81,7 +81,7 @@ def compute_amplitude_coalition_entropy(data):
     return ace_value_normalized
 
 
-def compute_synchrony_coalition_entropy(data, per_channel=False):
+def synchrony_coalition_entropy(data, per_channel=False):
     """Compute Synchrony Coalition Entropy (SCE).
 
     Note: The shuffled result is used as normalization.

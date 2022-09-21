@@ -9,8 +9,8 @@ from numpy.random import default_rng
 import pytest
 
 from mecons.complexity.entropy import (
-    compute_amplitude_coalition_entropy,
-    compute_synchrony_coalition_entropy,
+    amplitude_coalition_entropy,
+    synchrony_coalition_entropy,
     _compute_entropy
 )
 
@@ -31,7 +31,7 @@ def test_compute_entropy_string():
     assert entropy_value == 1
 
 
-def test_compute_amplitude_coalition_entropy():
+def test_amplitude_coalition_entropy():
     """Test computation of amplitude coalition entropy metric."""
     # test correct operation
     # two simple sinusoidal signals should have
@@ -42,25 +42,25 @@ def test_compute_amplitude_coalition_entropy():
     x1 = np.sin(t*2*np.pi*f)
     x2 = np.cos(t*2*np.pi*f)
     data = np.array([x1, x2])
-    ace_1 = compute_amplitude_coalition_entropy(data)
+    ace_1 = amplitude_coalition_entropy(data)
 
     rgn = default_rng()
     noise = 0.3*rgn.standard_normal(n_points)
     x1 = x1+noise
     x2 = x2+noise
     data = np.array([x1, x2])
-    ace_2 = compute_amplitude_coalition_entropy(data)
+    ace_2 = amplitude_coalition_entropy(data)
 
     assert ace_1 < ace_2
 
     # testing argument checker
     data = [[]]
     with pytest.raises(TypeError) as exc_info:
-        ace = compute_amplitude_coalition_entropy(data)
+        ace = amplitude_coalition_entropy(data)
     assert exc_info.type == TypeError
 
 
-def test_compute_synchrony_coalition_entropy():
+def test_synchrony_coalition_entropy():
     """Test computation of synchrony coalition entropy metric."""
     # test correct operation
     # two simple sinusoidal signals should have
@@ -71,19 +71,19 @@ def test_compute_synchrony_coalition_entropy():
     x1 = np.sin(t*2*np.pi*f)
     x2 = np.cos(t*2*np.pi*f)
     data = np.array([x1, x2])
-    sce_1 = compute_synchrony_coalition_entropy(data)
+    sce_1 = synchrony_coalition_entropy(data)
 
     rgn = default_rng()
     noise = 0.3*rgn.standard_normal(n_points)
     x1 = x1+noise
     x2 = x2+noise
     data = np.array([x1, x2])
-    sce_2 = compute_synchrony_coalition_entropy(data)
+    sce_2 = synchrony_coalition_entropy(data)
 
     assert sce_1 < sce_2
 
     # testing argument checker
     data = [[]]
     with pytest.raises(TypeError) as exc_info:
-        sce = compute_synchrony_coalition_entropy(data)
+        sce = synchrony_coalition_entropy(data)
     assert exc_info.type == TypeError
