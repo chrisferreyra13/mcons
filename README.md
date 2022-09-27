@@ -1,6 +1,5 @@
 # MeCons
-MeCons is an open-source Python package for measuring consciousness.  
-Built on the shoulders of giants like MNE-Python, SciPy, Numpy, etc., currently it includes a module for complexity metrics.
+MeCons is an open-source Python package for measuring consciousness. Built on the shoulders of giants like MNE-Python, SciPy, Numpy, etc., currently it includes a module for complexity metrics.
 
 ## Documentation
 Currently under development.
