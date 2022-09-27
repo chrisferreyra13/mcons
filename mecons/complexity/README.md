@@ -1,6 +1,4 @@
 # Complexity metrics
-Description of these metrics
-
 ## Lempel-Ziv complexity (LZc)
 It derives from the lack of compressibility of the input data matrix, taking into account patterns of activity in space and time. Strictly only reflects differentiation (and not integration)[1]. The normalised LZc is computed by dividing the raw value by the value obtained for the same binary input sequence randomly shuffled [1][2].
 
@@ -23,14 +21,14 @@ Reading recommendations:
 * [2]: Schartner et al., 2017.
 
 ## Perturbational complexity index (PCI)
-[INCOMPLETE]  
+[TO-ADD]  
 Complete brief description.
 
 Reading recommendations:
 * [3]: Casali et al., 2013.
 
 ## Permutation entropy (PE)
-[INCOMPLETE]  
+[TO-ADD]  
 Complete brief description.
 
 ## References
