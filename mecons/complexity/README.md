@@ -27,10 +27,6 @@ Complete brief description.
 Reading recommendations:
 * [3]: Casali et al., 2013.
 
-## Permutation entropy (PE)
-[TO-ADD]  
-Complete brief description.
-
 ## References
 1. Schartner, M., Seth, A., Noirhomme, Q., Boly, M., Bruno, M. A., Laureys, S., & Barrett, A. (2015). Complexity of multi-dimensional spontaneous EEG decreases during propofol induced general anaesthesia. PloS one, 10(8), e0133532.
 2. Schartner, M. M., Pigorini, A., Gibbs, S. A., Arnulfo, G., Sarasso, S., Barnett, L., ... & Barrett, A. B. (2017). Global and local complexity of intracranial EEG decreases during NREM sleep. Neuroscience of consciousness, 2017(1), niw022.
