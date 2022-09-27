@@ -17,15 +17,15 @@ def binarize_matrix(data, thr_method="mean"):
 
     Parameters
     ----------
-    data : ndarray, (n_channels, n_times)
+    data : ndarray, shape (n_channels, n_times)
         Multidimensional time series matrix.
-    thr_method : str
+    thr_method : str, optional (default "mean")
         If 'mean', the mean value of the Hilbert amplitude time series is used.
-        If 'median' the median value is used. By default 'mean'.
+        If 'median' the median value is used.
 
     Returns
     -------
-    ndarray
+    ndarray, shape (n_channels, n_times)
         Binarized data matrix.
     """
     if not isinstance(data, np.ndarray):
@@ -66,7 +66,7 @@ def binary_matrix_to_string(binary_matrix):
 
     Parameters
     ----------
-    binary_matrix : ndarray
+    binary_matrix : ndarray, shape (n_channels, n_times)
         Data matrix with binary values.
 
     Returns
@@ -96,12 +96,12 @@ def map_matrix_to_integer(binary_matrix):
 
     Parameters
     ----------
-    binary_matrix : ndarray, (n_rows, n_columns)
+    binary_matrix : ndarray, shape (n_rows, n_columns)
         Data matrix with binary values.
 
     Returns
     -------
-    ndarray, (1,n_columns)
+    ndarray, shape (1,n_columns)
         Array with integers.
     """
     if not isinstance(binary_matrix, np.ndarray):
@@ -126,17 +126,16 @@ def _compute_synchrony(p1, p2, threshold=0.8):
 
     Parameters
     ----------
-    p1 : ndarray, (1, n_times)
+    p1 : ndarray, shape (1, n_times)
         Phase time series.
-    p2 : ndarray, (1, n_times)
+    p2 : ndarray, shape (1, n_times)
         Phase time series.
-    threshold : float, optional
+    threshold : float, optional (default 0.8)
         Threshold to define "synchronized" (1) and "not synchronized" (0).
-        By default 0.8.
 
     Returns
     -------
-    ndarray, (1, n_times)
+    ndarray, shape (1, n_times)
         Binary synchrony time series.
     """
     if not isinstance(p1, np.ndarray) or not isinstance(p2, np.ndarray):
@@ -165,15 +164,14 @@ def compute_synchrony_matrix(data, threshold=0.8):
 
     Parameters
     ----------
-    data : ndarray, (n_channels, n_times)
+    data : ndarray, shape (n_channels, n_times)
         Multidimensional time series matrix.
-    threshold : float, optional
+    threshold : float, optional (default 0.8)
         Threshold to define "synchronized" (1) and "not synchronized" (0).
-        By default 0.8.
 
     Returns
     -------
-    ndarray, (n_channels, n_channels - 1, n_times)
+    ndarray, shape (n_channels, n_channels - 1, n_times)
         Synchrony matrix.
     """
     if not isinstance(data, np.ndarray):
@@ -213,7 +211,7 @@ def create_random_binary_matrix(n_rows, n_columns):
 
     Returns
     -------
-    ndarray, (n_rows, n_columns)
+    ndarray, shape (n_rows, n_columns)
         Random binary matrix.
     """
     if not isinstance(n_rows, int) or not isinstance(n_rows, int):

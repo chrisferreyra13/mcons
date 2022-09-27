@@ -59,17 +59,6 @@ def test_amplitude_coalition_entropy():
         ace = amplitude_coalition_entropy(data)
     assert exc_info.type == TypeError
 
-    # testing argument checker when preprocessed is False
-    data = [[]]
-    with pytest.raises(TypeError) as exc_info:
-        ace = amplitude_coalition_entropy(data, preprocessed=False)
-    assert exc_info.type == TypeError
-
-    data = np.array([[1, 0, 1], [5, 0, 2]])
-    with pytest.raises(ValueError) as exc_info:
-        ace = amplitude_coalition_entropy(data, preprocessed=False)
-    assert exc_info.type == ValueError
-
 
 def test_synchrony_coalition_entropy():
     """Test computation of synchrony coalition entropy metric."""
@@ -98,21 +87,3 @@ def test_synchrony_coalition_entropy():
     with pytest.raises(TypeError) as exc_info:
         sce = synchrony_coalition_entropy(data)
     assert exc_info.type == TypeError
-
-    # testing argument checker when preprocessed is False
-    data = [[]]
-    with pytest.raises(TypeError) as exc_info:
-        ace = synchrony_coalition_entropy(data, preprocessed=False)
-    assert exc_info.type == TypeError
-
-    # the shape is incorrect
-    data = np.array([[1, 0, 1], [1, 0, 0]])
-    with pytest.raises(ValueError) as exc_info:
-        ace = synchrony_coalition_entropy(data, preprocessed=False)
-    assert exc_info.type == ValueError
-
-    # the values are not binary
-    data = np.array([[[1, 0, 1]], [[5, 0, 2]]])
-    with pytest.raises(ValueError) as exc_info:
-        ace = synchrony_coalition_entropy(data, preprocessed=False)
-    assert exc_info.type == ValueError

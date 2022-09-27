@@ -52,7 +52,7 @@ def lempel_ziv_complexity(data):
 
     Parameters
     ----------
-    data : ndarray, (n_channels, n_times)
+    data : ndarray, shape (n_channels, n_times)
         Mulidimensional time series matrix.
 
     Returns
@@ -67,6 +67,9 @@ def lempel_ziv_complexity(data):
     data = binarize_matrix(data)
     binary_str = binary_matrix_to_string(data)
 
+    # compute LZc
+    lzc_value = _lempel_ziv_welch_compression(binary_str)
+
     # create random string for normalization
     random_list = list(binary_str)
     shuffle(random_list)
@@ -74,8 +77,7 @@ def lempel_ziv_complexity(data):
     for c in random_list:
         random_str += c
 
-    # compute LZc
-    lzc_value = _lempel_ziv_welch_compression(binary_str)
+    # normalize
     norm_value = float(_lempel_ziv_welch_compression(random_str))
     lzc_value_normalized = lzc_value / norm_value
 

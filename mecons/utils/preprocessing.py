@@ -15,12 +15,12 @@ def detrending_normalization(data):
 
     Parameters
     ----------
-    data : ndarray, (n_channels, n_times)
+    data : ndarray, shape (n_channels, n_times)
         Multidimensional time series matrix.
 
     Returns
     -------
-    ndarray
+    ndarray, shape (n_channels, n_times)
         Data matrix after detrending and subtracting the mean.
     """
     if not isinstance(data, np.ndarray):

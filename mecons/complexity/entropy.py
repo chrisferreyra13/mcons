@@ -47,35 +47,26 @@ def _compute_entropy(data):
     return entropy
 
 
-def amplitude_coalition_entropy(data, preprocessed=True):
+def amplitude_coalition_entropy(data):
     """Compute Amplitude Coalition Entropy (ACE).
 
     Note: The shuffled result is used as normalization.
 
     Parameters
     ----------
-    data : ndarray, (n_channels, n_times)
-        If preprocessed is True (default), mulidimensional time series matrix.
-        If preprocessed is False, binary matrix.
-    preprocessed : bool, optional (default True)
-        If True, data will be preprocessed with defined steps.
-        If False, data is not preprocessed but should be a binary matrix.
+    data : ndarray, shape (n_channels, n_times)
+        Mulidimensional time series matrix.
 
     Returns
     -------
     float
         Amplitude coalition entropy value (between 0 and 1).
     """
-    if preprocessed:
-        if not isinstance(data, np.ndarray):
-            raise TypeError("Data matrix should be a ndarray of float values.")
+    if not isinstance(data, np.ndarray):
+        raise TypeError("Data matrix should be a ndarray of float values.")
 
-        data = detrending_normalization(data)
-        data = binarize_matrix(data)
-    else:
-        if not isinstance(data, np.ndarray):
-            raise TypeError(
-                "Data matrix should be a ndarray of binary values.")
+    data = detrending_normalization(data)
+    data = binarize_matrix(data)
 
     try:
         col_map = map_matrix_to_integer(data)
@@ -98,22 +89,15 @@ def amplitude_coalition_entropy(data, preprocessed=True):
     return ace_value_normalized
 
 
-def synchrony_coalition_entropy(data, preprocessed=True, per_channel=False):
+def synchrony_coalition_entropy(data, per_channel=False):
     """Compute Synchrony Coalition Entropy (SCE).
 
     Note: The shuffled result is used as normalization.
 
     Parameters
     ----------
-    data : ndarray, shape (n_channels, ...)
-        If preprocessed is True (default), mulidimensional time series matrix
-        of shape (n_channels, n_times).
-        If preprocessed is False, should be a binary matrix of shape
-        (n_channels, n_channels - 1, n_times) representing the synchronization
-        between channels.
-    preprocessed : bool, optional (default True)
-        If True, data will be preprocessed with defined steps.
-        If False, data is not preprocessed but should be a binary matrix.
+    data : ndarray, shape (n_channels, n_times)
+        Mulidimensional time series matrix.
     per_channel : bool, optional (default False)
         If True, also returns SCE value per channel.
 
@@ -122,24 +106,12 @@ def synchrony_coalition_entropy(data, preprocessed=True, per_channel=False):
     float
         Synchrony coalition entropy value (between 0 and 1).
     """
-    if preprocessed:
-        if not isinstance(data, np.ndarray):
-            raise TypeError("Data matrix should be a ndarray of float values.")
+    if not isinstance(data, np.ndarray):
+        raise TypeError("Data matrix should be a ndarray of float values.")
 
-        data = detrending_normalization(data)
-        n_channels, n_values = np.shape(data)
-        data = compute_synchrony_matrix(data)
-    else:
-        if not isinstance(data, np.ndarray):
-            raise TypeError(
-                "Data matrix should be a ndarray of binary values.")
-        if len(np.shape(data)) != 3:
-            raise ValueError(
-                "Data matrix should be a ndarray of shape"
-                + "(n_channels, n_channels - 1, n_times)."
-            )
-
-        n_channels, _, n_values = np.shape(data)
+    data = detrending_normalization(data)
+    n_channels, n_values = np.shape(data)
+    data = compute_synchrony_matrix(data)
 
     # compute sce value (not normalized)
     channel_sce_value = np.zeros(n_channels)
