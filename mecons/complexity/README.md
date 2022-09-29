@@ -14,7 +14,7 @@ Reading recommendations:
 * [2]: Schartner et al., 2017.
 
 ## Synchrony coalition entropy (SCE)
-It reflects the entropy over time of the constitution (coalition) of the set of synchronous channels [2]. It quantifies variability in the relationship between pairs of channels [1].
+It reflects the entropy over time of the constitution (coalition) of the set of synchronous channels [2]. It quantifies variability in the relationship between pairs of channels [1]. The normalised value is computed in the same way as LZc [1][2].
 
 Reading recommendations:
 * [1]: Schartner et al., 2015.
