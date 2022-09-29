@@ -1,7 +1,7 @@
 """Usuful functions for preprocessing."""
 
 # This code was created based on Michael Schartner's code.
-# Author: Michael Schartner, m.schartner@sussex.ac.uk
+# Author: Michael Schartner, michael.schartner@internationalbrainlab.org
 #         Christian Ferreyra, chrisferreyra13@gmail.com
 # Date: 09.12.14 - 2022
 # License : BSD-3-Clause
