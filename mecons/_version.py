@@ -2,4 +2,4 @@
 # Authors: Christian Ferreyra, chrisferreyra13@gmail.com
 # License: BSD-3-Clause
 
-__version__ = '0.0.2'
+__version__ = '0.0.3'
