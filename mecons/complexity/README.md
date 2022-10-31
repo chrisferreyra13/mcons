@@ -1,6 +1,6 @@
 # Complexity metrics
 ## Lempel-Ziv complexity (LZc)
-It derives from the lack of compressibility of the input data matrix, taking into account patterns of activity in space and time. Strictly only reflects differentiation (and not integration)[1]. The normalised LZc is computed by dividing the raw value by the value obtained for the same binary input sequence randomly shuffled [1][2].
+It derives from the lack of compressibility of the input data matrix, taking into account patterns of activity in space and time. On spontaneous data strictly only reflects differentiation (and not integration) [1]. The normalised LZc is computed by dividing the raw value by the value obtained for the same binary input sequence randomly shuffled [1][2].
 
 Reading recommendations:
 * [1]: Schartner et al., 2015.
