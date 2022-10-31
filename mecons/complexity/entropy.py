@@ -11,14 +11,14 @@ import numpy as np
 
 from ..utils.preprocessing import detrending_normalization
 from ..utils.binary import (
-    binarize_matrix,
+    binarize_hilbert_amplitude,
     compute_synchrony_matrix,
     create_random_binary_matrix,
     map_matrix_to_integer,
 )
 
 
-def _compute_entropy(data):
+def compute_entropy(data):
     """Compute the Shannon entropy of a list of numbers/strings.
 
     Parameters
@@ -51,6 +51,7 @@ def amplitude_coalition_entropy(data):
     """Compute Amplitude Coalition Entropy (ACE).
 
     Note: The shuffled result is used as normalization.
+    Metric defined in Schartner et al. 2015.
 
     Parameters
     ----------
@@ -66,7 +67,7 @@ def amplitude_coalition_entropy(data):
         raise TypeError("Data matrix should be a ndarray of float values.")
 
     data = detrending_normalization(data)
-    data = binarize_matrix(data)
+    data = binarize_hilbert_amplitude(data)
 
     try:
         col_map = map_matrix_to_integer(data)
@@ -74,14 +75,14 @@ def amplitude_coalition_entropy(data):
         raise ex
 
     # compute ace value (not normalized)
-    ace_value = _compute_entropy(col_map)
+    ace_value = compute_entropy(col_map)
 
     # shuffle the data for normalization
     n_channels, _ = np.shape(data)
     for ch_idx in range(n_channels):
         shuffle(data[ch_idx])
 
-    shuffled_ace_value = _compute_entropy(map_matrix_to_integer(data))
+    shuffled_ace_value = compute_entropy(map_matrix_to_integer(data))
 
     # normalize
     ace_value_normalized = ace_value / float(shuffled_ace_value)
@@ -93,6 +94,7 @@ def synchrony_coalition_entropy(data, per_channel=False):
     """Compute Synchrony Coalition Entropy (SCE).
 
     Note: The shuffled result is used as normalization.
+    Metric defined in Schartner et al. 2015.
 
     Parameters
     ----------
@@ -120,13 +122,13 @@ def synchrony_coalition_entropy(data, per_channel=False):
             col_map = map_matrix_to_integer(data[ch_idx])
         except ValueError as ex:
             raise ex
-        channel_sce_value[ch_idx] = _compute_entropy(col_map)
+        channel_sce_value[ch_idx] = compute_entropy(col_map)
 
     # create random matrix for normalization
     col_map = map_matrix_to_integer(
         create_random_binary_matrix(n_channels - 1, n_values)
     )
-    normalization_value = _compute_entropy(col_map)
+    normalization_value = compute_entropy(col_map)
 
     # normalize
     sce_total = np.mean(channel_sce_value) / normalization_value

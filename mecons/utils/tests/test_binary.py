@@ -11,14 +11,14 @@ import pytest
 from mecons.utils.binary import (
     binary_matrix_to_string,
     map_matrix_to_integer,
-    binarize_matrix,
+    binarize_hilbert_amplitude,
     compute_synchrony_matrix,
     create_random_binary_matrix,
     _compute_synchrony
 )
 
 
-def test_binarize_matrix():
+def test_binarize_hilbert_amplitude():
     """Test matrix binarization."""
     # NOTE: this test should be improved
     # testing correct operation
@@ -36,7 +36,7 @@ def test_binarize_matrix():
 
     # amplitudes of the analytic signals are not exactly 1
     # so the means are not exactly 1 -> we need to check it manually
-    binary_matrix = binarize_matrix(data)
+    binary_matrix = binarize_hilbert_amplitude(data)
 
     for ch in range(2):
         is_ok = [False]*n_points
@@ -51,7 +51,7 @@ def test_binarize_matrix():
     # testing argument checker
     data = [[]]
     with pytest.raises(TypeError) as exc_info:
-        data_processed = binarize_matrix(data)
+        data_processed = binarize_hilbert_amplitude(data)
     assert exc_info.type == TypeError
 
 

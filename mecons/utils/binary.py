@@ -10,7 +10,7 @@ import numpy as np
 from scipy import signal
 
 
-def binarize_matrix(data, thr_method="mean"):
+def binarize_hilbert_amplitude(data, thr_method="mean"):
     """Binarize a multidimensional time series.
 
     Binaziration based on the instantaneous amplitude of the analytic signal.

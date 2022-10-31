@@ -12,7 +12,7 @@ from random import shuffle
 from ..utils.preprocessing import detrending_normalization
 from ..utils.binary import (
     binary_matrix_to_string,
-    binarize_matrix
+    binarize_hilbert_amplitude
 )
 
 
@@ -48,7 +48,10 @@ def _lempel_ziv_welch_compression(binary_string):
 
 
 def lempel_ziv_complexity(data):
-    """Compute LZc and use shuffled result as normalization.
+    """Compute LZc.
+
+    Note: The shuffled result is used as normalization.
+    Metric defined in Schartner et al. 2015.
 
     Parameters
     ----------
@@ -64,7 +67,7 @@ def lempel_ziv_complexity(data):
         TypeError("Data matrix should be a ndarray of float values.")
 
     data = detrending_normalization(data)
-    data = binarize_matrix(data)
+    data = binarize_hilbert_amplitude(data)
     binary_str = binary_matrix_to_string(data)
 
     # compute LZc
